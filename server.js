@@ -17,7 +17,6 @@ io.on('connection', function (socket){
 		// Now emit the data to the Steam Bot
 		io.emit('gamedata', message);
     });
-
     socket.on('disconnect', function () {
         logger.info('SocketIO > Disconnected socket ' + socket.id);
     });
