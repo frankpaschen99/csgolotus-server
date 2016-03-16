@@ -1,6 +1,6 @@
 /*
-	Socket.io server for handling interactions between the CSGOLotus backend and
-	the automated Steambot.
+	Lightweight socket.io server for handling connections between csgolotus.com and scruffybot
+	By Frank Paschen
 */
 
 var server     = require('http').createServer(),
@@ -18,8 +18,6 @@ io.on('connection', function (socket){
 
     socket.on('broadcast', function (message) {
         logger.info('CSGOLotus broadcast > ' + JSON.stringify(message));
-		
-		// Now emit the data to the Steam Bot
 		io.emit('gamedata', message);
     });
     socket.on('disconnect', function () {
