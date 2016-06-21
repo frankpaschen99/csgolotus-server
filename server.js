@@ -2,6 +2,7 @@ var server = require('http').createServer(),
     io = require('socket.io')(server),
     logger = require('winston'),
     port = 8080;
+	
 logger.remove(logger.transports.Console);
 logger.add(logger.transports.Console, {
     colorize: true,
@@ -11,17 +12,24 @@ logger.info('Server > listening on port ' + port);
 io.on('connection', function(socket) {
     logger.info('Server > Connected socket ' + socket.id);
     socket.on('broadcast', function(message) {
+		console.log(typeof message);
+		console.log(message);
         logger.info('CSGOLotus broadcast > ' + JSON.stringify(message));
         io.emit('gamedata', message)
     });
 	socket.on('response', function(message) {
 		logger.info('Scruffybot response > ' + JSON.stringify(message));
 		
-		var json = JSON.parse(message);
-		var SID64 = json[0];	// first index will always be the sender's steamid64
+		var SID64 = message.SID;
+		var tradeID = message.tradeID;
+		var assetids = message.items;
 		var sender_inventory = "https://api.steampowered.com/IEconItems_730/GetPlayerItems/v1/?key=2457B1C97418CC3095E99484AF2DC660&steamid=" + SID64;
-		// this will be more dynamic when we have multiple bots
-		var bot_inventory = "https://api.steampowered.com/IEconItems_730/GetPlayerItems/v1/?key=2457B1C97418CC3095E99484AF2DC660&steamid=76561198180102897";
+		var bot_inventory = "https://api.steampowered.com/IEconItems_730/GetPlayerItems/v1/?key=2457B1C97418CC3095E99484AF2DC660&steamid=76561198180102897"; // this will be more dynamic when we have multiple bots
+		
+		console.log("SID64: " + SID64);
+		console.log("tradeID: " + tradeID);
+		console.log("assetids[0]: " + assetids[0]);
+		io.emit('sendtrade', tradeID);
 		
 		// here, the bot will take the assetids provided by the steambot, and compare them to the inventory JSON of the player
 		// using their STEAMID64, and take the original_ids that correspond.
@@ -37,12 +45,8 @@ io.on('connection', function(socket) {
 		// http://backpack.tf/api/IGetMarketPrices/v1/?key=56cd0ca5b98d88be2ef9de16&appid=730
 
 		// queuing system:
-		// message will contain a tradeid at index 1
+		// message will contain a tradeid at index 0
 		// add to a mysql queue(?)
-		
-		// fix the JSON cancer so it actually works
-		io.emit('sendtrade', JSON.stringify("fuck")); 
-
 	});
     socket.on('disconnect', function() {
         logger.info('Server > Disconnected socket ' + socket.id);
