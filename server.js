@@ -35,14 +35,14 @@ io.on('connection', function(socket) {
 		// http://steamcommunity.com/id/thescruffybot/inventory/json/730/2
 		// BP.TF schema url for skin values (will later be on our file server, being updated every 5 minutes)
 		// http://backpack.tf/api/IGetMarketPrices/v1/?key=56cd0ca5b98d88be2ef9de16&appid=730
-		
-		
+
 		// queuing system:
 		// message will contain a tradeid at index 1
 		// add to a mysql queue(?)
 		
 		// fix the JSON cancer so it actually works
 		io.emit('sendtrade', JSON.stringify("fuck")); 
+
 	});
     socket.on('disconnect', function() {
         logger.info('Server > Disconnected socket ' + socket.id);
