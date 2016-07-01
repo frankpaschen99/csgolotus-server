@@ -89,7 +89,6 @@ function calcSkinValues( assetids, sid64 ) {
 	});
 }
 function getBalance( sid64 ) {
-	var balance = 0;
 	connection.query( 'SELECT credits FROM users WHERE STEAMID64 = ?', [sid64], function(err, rows) {
 		return rows[0]['credits'];
 	});
